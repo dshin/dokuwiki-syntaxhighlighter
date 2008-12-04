@@ -1,0 +1,48 @@
+====== SyntaxHighlighter Plugin for DokuWiki ======
+
+All documentation for the Blog Plugin is available online at:
+
+  * http://wiki.splitbrain.org/plugin:syntaxhighlighter
+
+Two changes need to be made.
+
+* Using DokuWiki version Release 2008-05-05, the inc\template.php file needs
+  to be modified.  The _tpl_metaheaders_action function was modified on line 369 
+  to use '></$tag>' as the closure tag instead of '/>'
+
+inc\template.php:357
+
+function _tpl_metaheaders_action($data){
+  foreach($data as $tag => $inst){
+    foreach($inst as $attr){
+      echo '<',$tag,' ',buildAttributes($attr);
+      if(isset($attr['_data'])){
+          if($tag == 'script' && $attr['_data']) {
+                 $attr['_data'] = "<!--//--><![CDATA[//><!--\n".
+                             $attr['_data'].
+                             "\n//--><!]]>";
+               }
+          echo '>',$attr['_data'],'</',$tag,'>';
+      }else{
+          echo '></',$tag,'>'; 
+      }
+      echo "\n";
+    }
+  }
+}
+
+
+* Second change needs to be made to the template.  The following lines need 
+  to be added somewhere towards the end of the template. I've placed the
+  changes at the end of the footer.html file.
+
+lib/tpl/default/footer.html:
+
+<script language="javascript">
+dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+dp.SyntaxHighlighter.HighlightAll('code');
+</script>
+
+
+(c) 2008 by David Shin <dshin@pimpsmart.com>
+See COPYING for license info.
